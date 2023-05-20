@@ -60,5 +60,5 @@ hide_menu_style = """
         """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-if _name_ == '_main_':
+if __name__ == '__main__':
 	main()
