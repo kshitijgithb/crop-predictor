@@ -17,6 +17,7 @@ def main():
     # title
     html_temp = """
     <div>
+    HeLLO
     <h1 style="color:GREEN ;text-align:center;"> Choose your Crop With Green Delight </h1>
     </div>
     """
@@ -29,7 +30,7 @@ def main():
         N = st.number_input("Nitrogen", 1,10000)
         P = st.number_input("Phosporus", 1,10000)
         K = st.number_input("Potassium", 1,10000)
-        temp = st.number_input("Temperature",0.0,100000.0)
+        temp = st.number_input("Temperature in °C",0.0,100000.0)
         humidity = st.number_input("Humidity in %", 0.0,100000.0)
         ph = st.number_input("Ph", 0.0,100000.0)
         rainfall = st.number_input("Rainfall in mm",0.0,100000.0)
@@ -37,7 +38,7 @@ def main():
         feature_list = [N, P, K, temp, humidity, ph, rainfall]
         single_pred = np.array(feature_list).reshape(1,-1)
         
-        if st.button('Predict'):
+        if st.button('Explore'):
 
             loaded_model = load_model('model.pkl')
             prediction = loaded_model.predict(single_pred)
