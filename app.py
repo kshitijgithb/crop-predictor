@@ -5,15 +5,19 @@ import numpy as np
 import os
 import pickle
 import warnings
+
+warnings.filterwarnings("ignore", message="Trying to unpickle estimator")
+
+st.set_page_config(page_title="Green Delight", page_icon="https://i.pinimg.com/736x/8f/0e/88/8f0e8808d45745a3e0e7fefc21b452dd.jpg", layout='centered', initial_sidebar_state="collapsed")
+
+
 com.html("""
 <div>
 <this is my first HTml page
 <button> This is a button </button>
 </div>
 """)
-warnings.filterwarnings("ignore", message="Trying to unpickle estimator")
 
-st.set_page_config(page_title="Green Delight", page_icon="https://i.pinimg.com/736x/8f/0e/88/8f0e8808d45745a3e0e7fefc21b452dd.jpg", layout='centered', initial_sidebar_state="collapsed")
 
 def load_model(modelfile):
 	loaded_model = pickle.load(open(modelfile, 'rb'))
