@@ -10,52 +10,32 @@ import plotly.io as pio
 import pickle
 from sklearn.utils import resample
 
-# Metrics
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, auc, roc_curve
-
-# Validation
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.pipeline import Pipeline, make_pipeline
-
-# Tuning
 from sklearn.model_selection import GridSearchCV
-
-# Feature Extraction
 from sklearn.feature_selection import RFE
-
-# Preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, Normalizer, Binarizer, LabelEncoder
-
-# Models
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
-
-# Ensembles
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import ExtraTreesClassifier
-
 warnings.filterwarnings('ignore')
-
-
 sns.set_style("whitegrid", {'axes.grid' : False})
 pio.templates.default = "plotly_white"
-
-# Analyze Data
 def explore_data(df):
     print("Number of Instances and Attributes:", df.shape)
     print('\n')
     print('Dataset columns:',df.columns)
     print('\n')
     print('Data types of each columns: ', df.info())
-
-# Checking for Duplicates
 def checking_removing_duplicates(df):
     count_dups = df.duplicated().sum()
     print("Number of Duplicates: ", count_dups)
@@ -64,15 +44,10 @@ def checking_removing_duplicates(df):
         print('Duplicate values removed!')
     else:
         print('No Duplicate values')
-
-# Split Data to Training and Validation set
 def read_in_and_split_data(data, target):
     X = data.drop(target, axis=1)
     y = data[target]
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2, random_state=0)
-    return X_train, X_test, y_train, y_test
-
-# Spot-Check Algorithms
 def GetModel():
     Models = []
     Models.append(('LR'   , LogisticRegression()))
@@ -91,10 +66,7 @@ def ensemblemodels():
     ensembles.append(( 'Bagging' , BaggingClassifier()))
     ensembles.append(('ET', ExtraTreesClassifier()))
     return ensembles
-
-# Spot-Check Normalized Models
-def NormalizedModel(nameOfScaler):
-    
+def NormalizedModel(nameOfScaler):  
     if nameOfScaler == 'standard':
         scaler = StandardScaler()
     elif nameOfScaler =='minmax':
@@ -117,13 +89,9 @@ def NormalizedModel(nameOfScaler):
     pipelines.append((nameOfScaler+'ET'  , Pipeline([('Scaler', scaler),('ET'  , ExtraTreesClassifier())])  ))
 
     return pipelines
-
-# Train Model
 def fit_model(X_train, y_train,models):
-    # Test options and evaluation metric
     num_folds = 10
     scoring = 'accuracy'
-
     results = []
     names = []
     for name, model in models:
@@ -135,12 +103,8 @@ def fit_model(X_train, y_train,models):
         print(msg)
         
     return names, results
-
-# Save Trained Model
 def save_model(model,filename):
     pickle.dump(model, open(filename, 'wb'))
-
-# Performance Measure
 def classification_metrics(model, conf_matrix):
     print(f"Training Accuracy Score: {model.score(X_train, y_train) * 100:.1f}%")
     print(f"Validation Accuracy Score: {model.score(X_test, y_test) * 100:.1f}%")
@@ -155,25 +119,16 @@ def classification_metrics(model, conf_matrix):
     print(classification_report(y_test, y_pred))
     
 
-# Load Dataset
 df = pd.read_csv('SmartCrop-Dataset.csv')
-
-# Remove Outliers
 Q1 = df.quantile(0.25)
 Q3 = df.quantile(0.75)
 IQR = Q3 - Q1
-df_out = df[~((df < (Q1 - 1.5 * IQR)) |(df > (Q3 + 1.5 * IQR))).any(axis=1)]
 
-# Split Data to Training and Validation set
 target ='label'
 X_train, X_test, y_train, y_test = read_in_and_split_data(df, target)
-
-# Train model
 pipeline = make_pipeline(StandardScaler(),  GaussianNB())
 model = pipeline.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 conf_matrix = confusion_matrix(y_test,y_pred)
 classification_metrics(pipeline, conf_matrix)
-
-# save model
-save_model(model, 'model.pkl')
+save_model(model,'model.pkl')
